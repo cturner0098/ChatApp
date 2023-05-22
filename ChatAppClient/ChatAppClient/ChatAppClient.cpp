@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 
     int recvbuflen = DEFAULT_BUFLEN;
 
-    const char* sendbuf = "this is a test";
+    const char* sendbuf = "message sent from client";
     char recvbuf[DEFAULT_BUFLEN];
 
     iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
@@ -98,9 +98,11 @@ int main(int argc, char **argv)
 
     do {
         iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
-        if (iResult > 0)
+        if (iResult > 0) {
             printf("Bytes recieved: %d\n", iResult);
-        else if (iResult == 0)
+            std::string recvString(recvbuf, iResult);
+            std::cout << recvString << std::endl;
+        } else if (iResult == 0)
             printf("Connection closed\n");
         else
             printf("recieve failed: %d\n", WSAGetLastError());

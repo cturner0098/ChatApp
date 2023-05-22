@@ -95,7 +95,12 @@ int main()
         if (iResult > 0) {
             printf("bytes received: %d\n", iResult);
 
-            iSendResult = send(ClientSocket, recvbuf, iResult, 0);
+            std::string recvString(recvbuf, iResult);
+            std::cout << recvString << std::endl;
+
+            const char* sendBuf = "message sent from server";
+
+            iSendResult = send(ClientSocket, sendBuf, iResult, 0);
             if (iSendResult == SOCKET_ERROR) {
                 printf("send failed: %d\n", WSAGetLastError());
                 closesocket(ClientSocket);
@@ -117,6 +122,18 @@ int main()
             return 1;
         }
     } while (iResult > 0);
+
+    iResult = shutdown(ClientSocket, SD_SEND);
+    if (iResult == SOCKET_ERROR) {
+        printf("shutdown failed: %d", WSAGetLastError());
+        closesocket(ClientSocket);
+        WSACleanup();
+
+        return 1;
+    }
+
+    closesocket(ClientSocket);
+    WSACleanup();
 
     return 0;
 }
